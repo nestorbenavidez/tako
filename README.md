@@ -35,8 +35,23 @@ tako
 ├── README.md
 └── tako.gemspec
 ```
+## Features
+* Forward and backward chaining (evaluate rules based on their consequents as well as their antecedents)
+* Complex rule patterns (support logical operators and quantifiers) 
+* Rule templates
+* Fact tracking
+* Rule ordering
+* Custom operators and functions
 
-## Usage
+# Usage
+## How a rule engine work?
+
+* Define your YAML file based on your rule requirements. This could include properties like condition, action, and priority.
+* Load the YAML file
+* Parse the rules
+* Evaluate the rules: Once you have parsed the rules, you can evaluate them by applying the conditions specified in the YAML file to the data that you want to evaluate. If the conditions are met, you can perform the action specified in the YAML file.
+
+## How can I use it?
 First, define your rules in a YAML file. Here's an example:
 
 ![](rule.png)
