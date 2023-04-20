@@ -15,6 +15,27 @@ Or install it yourself as:
 ```ruby
 $ gem install tako
 ```
+## Structure
+
+```ruby
+tako
+├── lib
+│   ├── tako
+│   │   ├── condition.rb
+│   │   ├── engine.rb
+│   │   ├── action.rb
+│   │   └── rule.rb
+│   └── tako.rb
+├── spec
+│   ├── condition_spec.rb
+│   ├── engine_spec.rb
+│   ├── action_spec.rb
+│   └── rule_spec.rb
+├── LICENSE.txt
+├── README.md
+└── tako.gemspec
+```
+
 ## Usage
 First, define your rules in a YAML file. Here's an example:
 
