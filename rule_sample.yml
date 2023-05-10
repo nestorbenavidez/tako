@@ -1,0 +1,11 @@
+- name: "Rule 1"
+  conditions:
+    - field: "age"
+      operator: ">"
+      value: 18
+      quantifier: "all"
+    - field: "country"
+      operator: "=="
+      value: "US"
+  actions:
+    - "print 'User is old enough and lives in the US'"

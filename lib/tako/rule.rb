@@ -1,26 +1,17 @@
 module Tako
   class Rule
-    attr_reader :name, :conditions, :actions, :priority
+    attr_reader :name, :priority, :conditions, :consequents
 
-    def initialize(name, priority = 0, &block)
-      @name = name
-      @priority = priority
-      @conditions = []
-      @actions = []
-      instance_eval(&block)
+    def initialize(rule)
+      @name = rule["name"]
+      @priority = rule["priority"]
+      @conditions = Condition.parse_conditions(rule["conditions"])
+      @consequents = rule["consequents"].map { |consequent| Action.new(consequent) }
     end
 
-    def condition(attribute, operator, value)
-      @conditions << Condition.new(attribute, operator, value)
-    end
-
-    def action(&block)
-      @actions << Action.new(&block)
-    end
-
-    def fire(facts)
+    def evaluate(facts)
       if @conditions.all? { |condition| condition.evaluate(facts) }
-        @actions.each(&:execute)
+        @consequents.each { |consequent| consequent.execute(facts) }
         true
       else
         false

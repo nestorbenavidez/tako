@@ -1,29 +1,34 @@
 module Tako
   class Condition
-    def initialize(attribute, operator, value)
-      @attribute = attribute
+    attr_reader :field, :operator, :value, :quantifier
+
+    def initialize(field, operator, value, quantifier = nil)
+      @field = field
       @operator = operator
       @value = value
+      @quantifier = quantifier
     end
 
     def evaluate(facts)
-      fact_value = facts[@attribute]
-      case @operator
-      when :eq
-        fact_value == @value
-      when :not_eq
-        fact_value != @value
-      when :gt
-        fact_value > @value
-      when :lt
-        fact_value < @value
-      when :gteq
-        fact_value >= @value
-      when :lteq
-        fact_value <= @value
+      if quantifier == "all"
+        values = facts[field]
+        return false unless values.is_a?(Array)
+
+        values.all? { |value| operator.evaluate(value, self.value) }
+      elsif quantifier == "any"
+        values = facts[field]
+        return false unless values.is_a?(Array)
+
+        values.any? { |value| operator.evaluate(value, self.value) }
       else
-        raise ArgumentError, "Invalid operator: #{@operator}"
+        operator.evaluate(facts[field], value)
       end
+    end
+
+    def to_s
+      quant_str = quantifier ? "#{quantifier} " : ""
+      "#{quant_str}#{field} #{operator} #{value}"
     end
   end
 end
+

@@ -1,24 +1,57 @@
 module Tako
   class Engine
-    def initialize(rules)
-      @rules = rules.map { |rule| Rule.new(rule[:name], rule[:priority]) { instance_eval(&rule[:block]) } }
+    attr_reader :rules
+
+    def initialize(rules_file_path)
+      @rules = load_rules(rules_file_path)
     end
 
     def execute(facts)
-      fired_rules = []
-      loop do
-        rule_fired = false
-        @rules.sort_by!(&:priority)
-        @rules.each do |rule|
-          next if fired_rules.include?(rule)
+      facts = Fact.new(facts)
+      while apply_rules(facts)
+        # Keep applying rules until there are no more matches
+      end
+      facts.to_h
+    end
 
-          if rule.fire(facts)
-            fired_rules << rule
-            rule_fired = true
+    def backward_chain(goal, facts)
+      # Try to derive the goal from the facts using backward chaining
+      rules.each do |rule|
+        if rule.consequent == goal
+          if rule.applies_to?(facts)
+            rule.perform(facts)
+            return true
+          else
+            rule.antecedent.each do |condition|
+              if backward_chain(condition, facts)
+                rule.perform(facts)
+                return true
+              end
+            end
           end
         end
-        break unless rule_fired
       end
+      false
+    end
+
+    private
+
+    def load_rules(rules_file_path)
+      # Load rules from YAML file and create Rule objects
+    end
+
+    def apply_rules(facts)
+      # Iterate over all rules and try to apply them to the facts
+      applied = false
+      rules.each do |rule|
+        if rule.applies_to?(facts)
+          rule.perform(facts)
+          applied = true
+        end
+      end
+      applied
     end
   end
 end
+
+
